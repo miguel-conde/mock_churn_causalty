@@ -1,0 +1,33 @@
+// Mock Dataset DAG
+digraph {
+	A [label=Age]
+	I [label=IncomeBracket]
+	R [label=Region]
+	H [label=HouseholdSize]
+	PH [label=PaymentHistory]
+	MC [label=MonthlyConsumption]
+	SAT [label=Satisfaction]
+	CPL [label=Complaints]
+	CRS [label=ChurnRiskScore]
+	FU [label=flag_unsatisfied]
+	T [label=Treatment]
+	CH [label=Churned]
+	A -> PH
+	I -> PH
+	R -> MC
+	H -> MC
+	A -> SAT
+	I -> SAT
+	A -> CPL
+	I -> CPL
+	PH -> CRS
+	MC -> CRS
+	SAT -> CRS
+	CPL -> CRS
+	CRS -> FU
+	SAT -> FU
+	CRS -> T
+	FU -> T
+	CRS -> CH
+	T -> CH
+}

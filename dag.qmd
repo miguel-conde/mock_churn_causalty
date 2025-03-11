@@ -1,0 +1,67 @@
+---
+title: "Untitled"
+format: html
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+# install.packages("dagitty")
+library(dagitty)
+
+dag <- dagitty('dag {
+  Age -> PaymentHistory
+  IncomeBracket -> PaymentHistory
+  Region -> MonthlyConsumption
+  HouseholdSize -> MonthlyConsumption
+  Age -> Satisfaction
+  IncomeBracket -> Satisfaction
+  Age -> Complaints
+  IncomeBracket -> Complaints
+
+  PaymentHistory -> ChurnRiskScore
+  MonthlyConsumption -> ChurnRiskScore
+  Satisfaction -> ChurnRiskScore
+  Complaints -> ChurnRiskScore
+
+  ChurnRiskScore -> flag_unsatisfied
+  Satisfaction -> flag_unsatisfied
+
+  ChurnRiskScore -> Treatment
+  flag_unsatisfied -> Treatment
+
+  ChurnRiskScore -> Churned
+  Treatment -> Churned
+}')
+
+# Visualizamos
+plot(dag)
+```
+
+```{r}
+df = readr::read_csv("simulated_data_2.csv")
+```
+
+```{r}
+df |>
+  group_by(treatment) |> 
+  summarize(churn_risk_score = mean(churn_risk_score), .groups = 'drop')
+```
+
+
+
+```{r}	
+# Fit a logistic regression model Churned ~ Treatment
+log_model <- glm(churned ~ treatment, data = df, family = "binomial")
+summary(log_model)
+```
+
+```{r}
+(1 + exp(-coef(log_model)['(Intercept)'])) / (1 + exp(-coef(log_model)['(Intercept)']-coef(log_model)['treatment']))
+```
+

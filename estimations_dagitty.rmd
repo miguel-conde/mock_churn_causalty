@@ -1,0 +1,54 @@
+---
+output:
+  reprex::reprex_document:
+    venue: "gh"
+    advertise: FALSE
+    session_info: TRUE
+    style: TRUE
+    comment: "#;-)"
+    tidyverse_quiet: FALSE
+    std_out_err: TRUE
+knit: reprex::reprex_render
+---
+
+```{r}	
+the_dag <- 'dag {
+bb="0,0,1,1"
+age [pos="0.077,0.107"]
+churn_risk_score [adjusted,pos="0.193,0.717"]
+churned [outcome,pos="0.603,0.867"]
+complaints [pos="0.292,0.499"]
+flag_unsatisfied [pos="0.361,0.634"]
+gender [pos="0.171,0.104"]
+household_size [pos="0.460,0.094"]
+income [pos="0.272,0.103"]
+monthly_consumption [pos="0.422,0.259"]
+payment_history [pos="0.247,0.266"]
+post_intervention_satisfaction [pos="0.621,0.700"]
+region [pos="0.361,0.099"]
+satisfaction [pos="0.368,0.497"]
+tenure [pos="0.176,0.268"]
+treatment [exposure,pos="0.487,0.741"]
+age -> payment_history
+age -> tenure
+churn_risk_score -> churned
+churn_risk_score -> flag_unsatisfied
+churn_risk_score -> treatment
+churned -> post_intervention_satisfaction
+complaints -> churn_risk_score
+flag_unsatisfied -> treatment
+household_size -> monthly_consumption
+income -> monthly_consumption
+income -> payment_history
+income -> satisfaction
+income -> treatment
+payment_history -> churn_risk_score
+payment_history -> complaints
+payment_history -> satisfaction
+satisfaction -> churn_risk_score
+satisfaction -> complaints
+tenure -> churn_risk_score
+treatment -> churned
+treatment -> post_intervention_satisfaction
+}'
+```
