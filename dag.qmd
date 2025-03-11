@@ -1,13 +1,21 @@
 ---
 title: "Untitled"
-format: html
+format: 
+  html:
+    highlight: zenburn
+    theme: cerulean
+    toc: true
+    toc_float: true
+    self-contained: true
+output: html_document
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
-library(tidyverse)
+#| warning: FALSE
+library(tidyverse, quietly = TRUE, warn.conflicts = FALSE)
 ```
 
 ```{r}

@@ -1,17 +1,74 @@
 ---
-output:
-  reprex::reprex_document:
-    venue: "gh"
-    advertise: FALSE
-    session_info: TRUE
-    style: TRUE
-    comment: "#;-)"
-    tidyverse_quiet: FALSE
-    std_out_err: TRUE
-knit: reprex::reprex_render
+title: "Efectos total y directo en R (`dagitty`)"
+format: 
+  html:
+    highlight: zenburn
+    theme: cerulean
+    toc: true
+    toc_float: true
+    self-contained: true
 ---
 
-```{r}	
+# Mock data
+
+```{r}
+#| warning: FALSE
+library(tidyverse, quietly = TRUE, warn.conflicts = FALSE)
+
+N <- 1000
+
+set.seed(2025)
+
+df <- tibble(
+  X = rnorm(N),
+  Z =2*X + rnorm(N),
+  Y = 2*X + 3*Z + rnorm(N)
+)
+```
+
+```{r}
+the_dag <- 'dag {
+X -> Y
+X -> Z
+Z -> Y
+}'
+```
+
+```{r}
+library(dagitty)
+
+dag <- dagitty(the_dag)
+
+plot(dag)
+```
+
+```{r}
+# Find adjustment for total effect
+adjustment_sets <- adjustmentSets(dag, "X", "Y", effect = "total")
+adjustment_sets
+```
+
+```{r}
+# Find adjustment for direct effect
+adjustment_sets <- adjustmentSets(dag, "X", "Y", effect = "direct")
+adjustment_sets
+```
+
+```{r}
+# Fit a linear regression model Y ~ X (for total effect)
+lm_total <- lm(Y ~ X, data = df)
+summary(lm_total)
+```
+
+```{r}
+# Fit a linear regression model Y ~ X + Z (for direct effect)
+lm_direct <- lm(Y ~ X + Z, data = df)
+summary(lm_direct)
+```
+
+# Más complicado
+
+```{r}
 the_dag <- 'dag {
 bb="0,0,1,1"
 age [pos="0.077,0.107"]
@@ -51,4 +108,10 @@ tenure -> churn_risk_score
 treatment -> churned
 treatment -> post_intervention_satisfaction
 }'
+```
+
+```{r}
+dag <- dagitty(the_dag)
+
+plot(dag)
 ```
